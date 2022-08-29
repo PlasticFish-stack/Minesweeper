@@ -1,0 +1,77 @@
+body{
+    background: #231955;
+    color: white;
+}
+#IndexGame{
+    height: 600px;
+    width: 800px;
+    margin: 0 auto;
+}
+#Target{
+    margin: 0 auto;
+    margin-top: 20%;
+}
+#TargetTop{
+    width: 500px;
+}
+#TargetTop h1{
+    margin: 0 auto;
+}
+#TargetTop button{
+    height: 30px;
+    width: 80px;
+    margin: 0 auto;
+}
+.over{
+    background-image: linear-gradient(to top, #f43b47 0%, #453a94 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-clip:text;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: '楷体';
+    color: transparent;
+    font-size: 500px;
+    -webkit-animation: forwards 4s;
+};
+@keyframes forward {
+    0%{
+        transform: scale(1);
+    }
+    100%{
+        transform: scale((1.5));
+    }
+    
+}
+.none{
+    display: none;
+}
+.icon{
+    margin-bottom: -2px
+}
+.TargetClass{
+    height: 20px;
+    width: 20px;
+    background: #FFB200;
+    border: 1px solid black;
+    font-size: 15px;
+    font-weight: bolder;
+    text-align: center;
+}
+.TargetClass:hover{
+    height: 20px;
+    width: 20px;
+    background: #FFE5B4;
+}
+.Origin{
+    height: 20px;
+    width: 20px;
+    background: white;
+    border: 1px solid black;
+    font-size: 15px;
+    font-weight: bolder;
+    text-align: center;
+    color: black;
+}

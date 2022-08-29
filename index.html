@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="IndexGame">
+        <div id="TargetTop">  
+            <h1>Mineweeper</h1>
+            <button onclick="createMine(8, 8, 10)">初级</button>
+            <button onclick="createMine(16, 16, 40)">中级</button>
+            <button onclick="createMine(16,30, 99)">高级</button>
+        </div>
+        <table id="Target">
+        </table>
+        <div id="over" class="none">菜</div>
+    </div>
+</body>
+<script src="./index.js"></script>
+</html>
