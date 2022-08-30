@@ -1,7 +1,3 @@
-document.getElementById('Target').style.display = "none";
-document.getElementById('Target').oncontextmenu = (e) => {
-    e.preventDefault()
-};
 class Mineweeper {
     constructor(columnNum, rowNum, boomNum) {
         this.logic(this.create(columnNum, rowNum, boomNum));
@@ -36,10 +32,13 @@ class Mineweeper {
         }//添加columnNum行tr,在tr内加入rowNum个td;
         return {boomArray, columnNum, rowNum}
     }
+
+    
     //创建扫雷棋盘
     logic(e) {
         const {boomArray: boom, columnNum: column, rowNum: row} = e;
         const TargetTd = Array.from(document.getElementsByTagName('td'));
+        
         let TargetBool = false;
         let Grid = column * row;
         let TdLength = TargetTd.length;
@@ -186,6 +185,9 @@ class Mineweeper {
                         leftTop();
                         rightBottom();
                         leftBottom();
+                        TargetTd[index].oncontextmenu = (e) => {
+                            e.preventDefault();
+                        }//去除index格子的右键默认点击事件
                     }else{
                         TargetTd[index].innerText = origin.originNum;
                         TargetTd[index].setAttribute('class', 'Origin');
@@ -201,6 +203,9 @@ class Mineweeper {
         }//点击事件控制,传入td索引值递归周围格子
         TargetTd.forEach((item, index) => {
             item.addEventListener('click', (self) => {
+                if(self.target.nodeName != 'TD'){
+                    return false
+                }//如果点击时不是td格子则return false，因为这个循环可能会循环到td内的img值,导致点击后会有个白框
                 if(TargetBool == false){
                     if(boomSearch(index) == true){
                         let Lose = new Promise((res, rej) => {setTimeout(res, 1)});
@@ -208,15 +213,31 @@ class Mineweeper {
                             const BoomIcon = document.createElement('img');
                             BoomIcon.setAttribute('src', './bomb.svg');
                             BoomIcon.setAttribute('class', 'icon');
-                            TargetTd[i].appendChild(BoomIcon);
+                            if(TargetTd[i].childNodes.length == 0){
+                                TargetTd[i].appendChild(BoomIcon);
+                            }else if(TargetTd[i].childNodes[0].getAttribute('class') == 'icon'){
+
+                            }
+                            
                         });
                         TargetTd.forEach((item, index) => {
                             if(boom.indexOf(index) == -1){
+                                const falseIcon = document.createElement('img');
+                                falseIcon.setAttribute('src', './false.svg');
+                                falseIcon.setAttribute('class', 'false');
                                 let TrText = originSearch(quantity(index)).origin.originNum;
                                 if(TrText != 0){
                                     item.innerText = TrText;
+                                    // if(TargetTd[index].childNodes.length >= 1 && TargetTd[index].childNodes[0].nodeName != '#text'){
+                                    //     TargetTd[index].appendChild(falseIcon);
+                                    // };1234
                                 }
+                                if(TargetTd[index].childNodes.length == 1 && TargetTd[index].childNodes[0].nodeName != '#text'){
+                                    TargetTd[index].appendChild(falseIcon);
+                                };
                                 item.setAttribute('class', 'Origin');
+                                
+                                
                             }
                         })
                         Lose.then((res) => {
@@ -230,38 +251,64 @@ class Mineweeper {
                             self.target.innerText = TrText;
                         }else{
                             operationLogic(index);
-                            console.log(dataProcessing);
                         }//为0格时操作
                     }
                 }else{
                     return
-                }//点到炸弹了,TargetBool为true,取消click监听           
+                }//点到炸弹了,TargetBool为true,取消click监听
+                
             });
             item.oncontextmenu = (e) =>{
                 e.preventDefault();
-                if(flag.length < boomNum){
-                    if(flag.indexOf(index) == -1){
-                        const BoomIcon = document.createElement('img');
-                        BoomIcon.setAttribute('src', './mark.svg');
-                        BoomIcon.setAttribute('class', 'icon');
-                        e.target.appendChild(BoomIcon);
-                        flag.push(index);
+                if(TargetBool == false){
+                    if(item.hasChildNodes() == false){
+                        if(flag.length < boomNum){//flag数组如果超过炸弹数组数量则进入else直接return
+                            if(flag.indexOf(index) == -1){//如果flag数组内没有点击格子的index值则给格子加入旗帜图标,并将格子index值加入flag数组内
+                                const BoomIcon = document.createElement('img');
+                                BoomIcon.setAttribute('src', './mark.svg');
+                                BoomIcon.setAttribute('class', 'icon');
+                                e.target.appendChild(BoomIcon);
+                                flag.push(index);
+                            }else{
+                                return
+                            }
+                        }else{
+                            return
+                        }
                     }else{
-                        return
+                        if(flag.indexOf(index) != -1){
+                            Array.from(item.childNodes).forEach((i) => {
+                                i.remove();
+                            });
+                            let clearFlag = flag.findIndex((val) => {return val == index});
+                            console.log(flag);
+                            flag.splice(clearFlag,1);
+                            console.log(flag);
+                        }else{
+                            console.log("什么鬼情况,flag内没有这个值但是格子里有值?");
+                        }
                     }
                 }else{
-                    return
+                    return false
                 }
-                
-                console.log(flag);
-            };
+                if(flag.sort((a,b)=>{return a>b?-1:a<b?1:0}).toString() == boom.sort((a,b)=>{return a>b?-1:a<b?1:0}).toString()){
+                    TargetBool = true;
+                    alert('那只能说,你是真的牛逼')
+                }
+            };//右键生成旗帜,如果旗帜数量等于炸弹数量则不再触发
         });
     }
 }
+
+document.getElementById('Target').style.display = "none"; //因为技术力原因隐藏Table
+document.getElementById('Target').oncontextmenu = (e) => {
+    e.preventDefault()
+};//取消Table内边框等位置的浏览器右键事件
+document.getElementsByClassName('icon').oncontextmenu = (e) => {
+    e.preventDefault()
+}
 function createMine(num, num_, boom) {
     console.clear();
-    document.getElementById('Target').style.display = '';
-    let i = new Mineweeper(num, num_, boom);
-    console.log(i);
-    
+    document.getElementById('Target').style.display = '';//因为技术力原因不知道怎么把没内容但是边框特别粗的table隐藏，所以这里可以点击生成后取消隐藏Table
+    let i = new Mineweeper(num, num_, boom); 
 }//新建扫雷实例

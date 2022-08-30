@@ -30,8 +30,8 @@ body{
     -webkit-animation: light 1s;
     animation: light 1s;
     text-shadow: 
-    0 0 5px #FFB200,
-    0 0 5px #FFB200,
+    0 0 3px #FFB200,
+    0 0 3px #FFB200,
     0 0 1px #FFB200;
 }
 @-webkit-keyframes light{
@@ -41,8 +41,8 @@ body{
     }
     to{
         text-shadow: 
-        0 0 5px #FFB200,
-        0 0 5px #FFB200,
+        0 0 3px #FFB200,
+        0 0 3px #FFB200,
         0 0 1px #FFB200
         
     }
@@ -54,8 +54,8 @@ body{
     }
     to{
         text-shadow: 
-        0 0 5px #FFB200,
-        0 0 5px #FFB200,
+        0 0 3px #FFB200,
+        0 0 3px #FFB200,
         0 0 1px #FFB200
     }
 }
@@ -76,7 +76,17 @@ body{
     top: 80px;
 }
 .icon{
-    margin-bottom: -2px
+    top: 2px;
+    position:relative;
+}
+.flag{
+    top: 2px;
+    position:relative;
+}
+.false{
+    margin-top: 3px;
+    margin-left: -16px;
+    position:absolute;
 }
 .TargetClass{
     height: 20px;
