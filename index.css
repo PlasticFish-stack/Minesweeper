@@ -3,50 +3,77 @@ body{
     color: white;
 }
 #IndexGame{
-    height: 600px;
-    width: 800px;
-    margin: 0 auto;
+    height: 800px;
+    width: 1000px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 #Target{
     margin: 0 auto;
-    margin-top: 20%;
+    margin-top: 5%;
+    border: 8px solid white;
+    box-shadow: 1px 3px 1px 4px gray inset;
 }
 #TargetTop{
     width: 500px;
 }
 #TargetTop h1{
-    margin: 0 auto;
+    color: #fff;
+    position: relative;
+    left: 100%;
+    top: -20px;
+    transform: translateX(-20%);
 }
-#TargetTop button{
+#TargetTop h1:hover{
+    -webkit-animation: light 1s;
+    animation: light 1s;
+    text-shadow: 
+    0 0 5px #FFB200,
+    0 0 5px #FFB200,
+    0 0 1px #FFB200;
+}
+@-webkit-keyframes light{
+    from{
+        text-shadow : 
+        0 0 0px white; 
+    }
+    to{
+        text-shadow: 
+        0 0 5px #FFB200,
+        0 0 5px #FFB200,
+        0 0 1px #FFB200
+        
+    }
+}
+@keyframes light{
+    from{
+        text-shadow : 
+        0 0 0px white; 
+    }
+    to{
+        text-shadow: 
+        0 0 5px #FFB200,
+        0 0 5px #FFB200,
+        0 0 1px #FFB200
+    }
+}
+#TargetTop div{
+    position: relative;
+    left: 80%;
+    transform: translateX(-25%);
+}
+.btn{
+    border: 0px;
+    color: #231955;
+    font-size: large;
+    font-weight: bold;
+    background-color: #FFB200;
     height: 30px;
     width: 80px;
-    margin: 0 auto;
-}
-.over{
-    background-image: linear-gradient(to top, #f43b47 0%, #453a94 100%);
-    background-repeat: no-repeat;
-    background-size: cover;
-    -webkit-background-clip:text;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: '楷体';
-    color: transparent;
-    font-size: 500px;
-    -webkit-animation: forwards 4s;
-};
-@keyframes forward {
-    0%{
-        transform: scale(1);
-    }
-    100%{
-        transform: scale((1.5));
-    }
-    
-}
-.none{
-    display: none;
+    margin-left: 10%;
+    top: 80px;
 }
 .icon{
     margin-bottom: -2px

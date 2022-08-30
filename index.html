@@ -9,15 +9,19 @@
 </head>
 <body>
     <div id="IndexGame">
+        <img src="./mark.svg" alt="" srcset="">
         <div id="TargetTop">  
             <h1>Mineweeper</h1>
-            <button onclick="createMine(8, 8, 10)">初级</button>
-            <button onclick="createMine(16, 16, 40)">中级</button>
-            <button onclick="createMine(16,30, 99)">高级</button>
+            <div>
+                <button onclick="createMine(8, 8, 10)" class="btn">初级</button>
+                <button onclick="createMine(16, 16, 40)" class="btn">中级</button>
+                <button onclick="createMine(16,30, 99)" class="btn">高级</button>
+            </div>
         </div>
         <table id="Target">
+            
         </table>
-        <div id="over" class="none">菜</div>
+        <div></div>
     </div>
 </body>
 <script src="./index.js"></script>

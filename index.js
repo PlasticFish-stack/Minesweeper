@@ -1,3 +1,7 @@
+document.getElementById('Target').style.display = "none";
+document.getElementById('Target').oncontextmenu = (e) => {
+    e.preventDefault()
+};
 class Mineweeper {
     constructor(columnNum, rowNum, boomNum) {
         this.logic(this.create(columnNum, rowNum, boomNum));
@@ -34,7 +38,6 @@ class Mineweeper {
     }
     //创建扫雷棋盘
     logic(e) {
-        
         const {boomArray: boom, columnNum: column, rowNum: row} = e;
         const TargetTd = Array.from(document.getElementsByTagName('td'));
         let TargetBool = false;
@@ -45,6 +48,9 @@ class Mineweeper {
             lose: "Game Over"
         };
         let dataProcessing = [];
+        let flag = [];
+        let boomNum = boom.length;
+        
         const quantity = (index) => {
             if(typeof index != 'number'){
                 throw new Error('你是不是脑子有问题.quantity传td索引值进来才能用');
@@ -167,7 +173,7 @@ class Mineweeper {
                     operationLogic(leftBottomNum);
                 }
             };
-            if(dataProcessing.indexOf(index) == -1){
+            if(dataProcessing.indexOf(index) == -1 && flag.indexOf(index) == -1){
                 dataProcessing.push(index);
                 if(boom.indexOf(index) == -1){
                     if(origin.originNum == 0){
@@ -195,7 +201,6 @@ class Mineweeper {
         }//点击事件控制,传入td索引值递归周围格子
         TargetTd.forEach((item, index) => {
             item.addEventListener('click', (self) => {
-                console.time();
                 if(TargetBool == false){
                     if(boomSearch(index) == true){
                         let Lose = new Promise((res, rej) => {setTimeout(res, 1)});
@@ -215,7 +220,6 @@ class Mineweeper {
                             }
                         })
                         Lose.then((res) => {
-                            document.getElementById('over').setAttribute('class', 'over');
                             TargetBool = true;
                         });//点击到炸弹时全体格子显示且无法再点击
                     }else{
@@ -232,16 +236,31 @@ class Mineweeper {
                 }else{
                     return
                 }//点到炸弹了,TargetBool为true,取消click监听           
-                console.timeEnd();
-            })
+            });
+            item.oncontextmenu = (e) =>{
+                e.preventDefault();
+                if(flag.length < boomNum){
+                    if(flag.indexOf(index) == -1){
+                        const BoomIcon = document.createElement('img');
+                        BoomIcon.setAttribute('src', './mark.svg');
+                        BoomIcon.setAttribute('class', 'icon');
+                        e.target.appendChild(BoomIcon);
+                        flag.push(index);
+                    }else{
+                        return
+                    }
+                }else{
+                    return
+                }
+                
+                console.log(flag);
+            };
         });
-       
-        
     }
 }
 function createMine(num, num_, boom) {
     console.clear();
-    document.getElementById('over').setAttribute('class', 'none');
+    document.getElementById('Target').style.display = '';
     let i = new Mineweeper(num, num_, boom);
     console.log(i);
     
