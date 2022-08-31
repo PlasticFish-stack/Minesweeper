@@ -15,6 +15,7 @@ body{
     margin-top: 5%;
     border: 8px solid white;
     box-shadow: 1px 3px 1px 4px gray inset;
+    border-radius: 6px;
 }
 #TargetTop{
     width: 500px;
@@ -82,8 +83,18 @@ body{
 .flag{
     top: 2px;
     position:relative;
+    
+}
+.num{
+    position: absolute;
+    margin-left: -1px;
 }
 .false{
+    margin-top: 3px;
+    margin-left: -16px;
+    position:absolute;
+}
+.right{
     margin-top: 3px;
     margin-left: -16px;
     position:absolute;

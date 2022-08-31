@@ -31,28 +31,35 @@ class Mineweeper {
             TargetTable.appendChild(TargetRow);
         }//添加columnNum行tr,在tr内加入rowNum个td;
         return {boomArray, columnNum, rowNum}
-    }
-
-    
-    //创建扫雷棋盘
+    }//创建扫雷棋盘
     logic(e) {
         const {boomArray: boom, columnNum: column, rowNum: row} = e;
         const TargetTd = Array.from(document.getElementsByTagName('td'));
-        
-        let TargetBool = false;
-        let Grid = column * row;
-        let TdLength = TargetTd.length;
+        let TargetBool = false;//为false才可以点击,如果为true则全部格子不能操作
+        let Grid = column * row;//棋盘格子数量
         let Title = {
             win: "Game Clear",
             lose: "Game Over"
         };
         let dataProcessing = [];
-        let flag = [];
-        let boomNum = boom.length;
-        
+        let data = [];
+        for(let i = 0; i < Grid; i++){
+            data[i] = i
+        };
+        console.log(data,'data');
+        // let dataDeleteBoom = data.filter((num) => {
+        //     if(boom.indexOf(num) == -1){
+        //         console.log(num, 'num');
+        //         return num
+        //     }///////////////////////////////////////////////////////////////////////////
+        // });
+        console.log(boom);
+        console.log(dataDeleteBoom);
+        let flag = [];//旗帜数组,右击时会push进去格子的index值,如果flag内已经有该index值则不操作
+        let boomNum = boom.length;//炸弹数组的长度
         const quantity = (index) => {
-            if(typeof index != 'number'){
-                throw new Error('你是不是脑子有问题.quantity传td索引值进来才能用');
+            if(typeof index != 'number' && index >= Grid){
+                throw new Error('你是不是脑子有问题,quantity传td索引值进来才能用');
             };
             const origin = {
                 originNum: 0,
@@ -99,7 +106,7 @@ class Mineweeper {
             return { origin, nineGrid , index}
         };//返回以index为中心的九宫格位置(index为Td索引值)
         const boomSearch = (index) => {
-            if(typeof index != 'number'){
+            if(typeof index != 'number' && index >= Grid ){
                 throw new Error('你是不是脑子有问题,boomSearch传td索引值进来才能用');
             };
             let bool = false;
@@ -173,8 +180,8 @@ class Mineweeper {
                 }
             };
             if(dataProcessing.indexOf(index) == -1 && flag.indexOf(index) == -1){
-                dataProcessing.push(index);
                 if(boom.indexOf(index) == -1){
+                    dataProcessing.push(index);
                     if(origin.originNum == 0){
                         TargetTd[index].setAttribute('class', 'Origin');
                         up();
@@ -198,7 +205,7 @@ class Mineweeper {
                 }
                 //已处理的格子加入数组,遍历时如果有格子index值直接return
             }else{
-                return
+                return false
             };
         }//点击事件控制,传入td索引值递归周围格子
         TargetTd.forEach((item, index) => {
@@ -207,18 +214,27 @@ class Mineweeper {
                     return false
                 }//如果点击时不是td格子则return false，因为这个循环可能会循环到td内的img值,导致点击后会有个白框
                 if(TargetBool == false){
+                    if(flag.indexOf(index) != -1){
+                        return false
+                    }//如果是旗帜则不触发点击事件
                     if(boomSearch(index) == true){
                         let Lose = new Promise((res, rej) => {setTimeout(res, 1)});
                         boom.forEach((i) => {
                             const BoomIcon = document.createElement('img');
                             BoomIcon.setAttribute('src', './bomb.svg');
                             BoomIcon.setAttribute('class', 'icon');
-                            if(TargetTd[i].childNodes.length == 0){
+                            if(TargetTd[i].childNodes.length != 0){
+                                Array.from(TargetTd[i].childNodes).forEach((t) => {
+                                    if(t.getAttribute('class') == 'flag'){
+                                        const rightIcon = document.createElement('img');
+                                        rightIcon.setAttribute('src', './right.svg');
+                                        rightIcon.setAttribute('class', 'right');
+                                        TargetTd[i].appendChild(rightIcon);
+                                    }
+                                })//如果炸弹位置上已经有旗帜了则加入一个打勾(代表标对)的图标
+                            }else{
                                 TargetTd[i].appendChild(BoomIcon);
-                            }else if(TargetTd[i].childNodes[0].getAttribute('class') == 'icon'){
-
                             }
-                            
                         });
                         TargetTd.forEach((item, index) => {
                             if(boom.indexOf(index) == -1){
@@ -226,22 +242,46 @@ class Mineweeper {
                                 falseIcon.setAttribute('src', './false.svg');
                                 falseIcon.setAttribute('class', 'false');
                                 let TrText = originSearch(quantity(index)).origin.originNum;
+                                let textNode = document.createElement('span');
+                                let text = document.createTextNode(TrText);
+                                textNode.appendChild(text);
+                                textNode.setAttribute('class', 'num');
                                 if(TrText != 0){
-                                    item.innerText = TrText;
-                                    // if(TargetTd[index].childNodes.length >= 1 && TargetTd[index].childNodes[0].nodeName != '#text'){
-                                    //     TargetTd[index].appendChild(falseIcon);
-                                    // };1234
+                                    if(item.childNodes.length != 0){
+                                        Array.from(item.childNodes).forEach((t) => {
+                                            if(t.nodeName == 'IMG'){
+                                                console.log(t);
+                                                if(t.getAttribute('class') == 'flag'){
+                                                    t.style.opacity = '0';
+                                                    item.appendChild(textNode);
+                                                    falseIcon.style.opacity = '0.6';
+                                                    item.appendChild(falseIcon);
+                                                }
+                                            }   
+                                        })
+                                    }else{
+                                        item.innerText = TrText;
+                                    }
+                                }else{
+                                    if(item.childNodes.length != 0){
+                                        Array.from(item.childNodes).forEach((t) => {
+                                            if(t.nodeName == 'IMG'){
+                                                console.log(t);
+                                                if(t.getAttribute('class') == 'flag'){
+                                                    item.appendChild(falseIcon);
+                                                }
+                                            }   
+                                        })
+                                    };
                                 }
-                                if(TargetTd[index].childNodes.length == 1 && TargetTd[index].childNodes[0].nodeName != '#text'){
-                                    TargetTd[index].appendChild(falseIcon);
-                                };
                                 item.setAttribute('class', 'Origin');
-                                
-                                
                             }
                         })
                         Lose.then((res) => {
-                            TargetBool = true;
+                            setTimeout(() => {
+                                TargetBool = true;
+                                alert('菜');
+                            }, 50)  
                         });//点击到炸弹时全体格子显示且无法再点击
                     }else{
                         let TrText = originSearch(quantity(index)).origin.originNum;
@@ -252,11 +292,18 @@ class Mineweeper {
                         }else{
                             operationLogic(index);
                         }//为0格时操作
+                        if(dataProcessing.indexOf(index) == -1){
+                            dataProcessing.push(index);
+                        }
+                        console.log(dataProcessing.sort((a,b)=>{return a>b?-1:a<b?1:0}));
+                        console.log(dataDeleteBoom.sort((a,b)=>{return a>b?-1:a<b?1:0}));
+                        if(dataProcessing.sort((a,b)=>{return a>b?-1:a<b?1:0}).toString() == dataDeleteBoom.sort((a,b)=>{return a>b?-1:a<b?1:0}).toString()){
+                            alert('那只能说,你是真的牛逼')
+                        }
                     }
                 }else{
                     return
                 }//点到炸弹了,TargetBool为true,取消click监听
-                
             });
             item.oncontextmenu = (e) =>{
                 e.preventDefault();
@@ -266,7 +313,7 @@ class Mineweeper {
                             if(flag.indexOf(index) == -1){//如果flag数组内没有点击格子的index值则给格子加入旗帜图标,并将格子index值加入flag数组内
                                 const BoomIcon = document.createElement('img');
                                 BoomIcon.setAttribute('src', './mark.svg');
-                                BoomIcon.setAttribute('class', 'icon');
+                                BoomIcon.setAttribute('class', 'flag');
                                 e.target.appendChild(BoomIcon);
                                 flag.push(index);
                             }else{
@@ -281,11 +328,7 @@ class Mineweeper {
                                 i.remove();
                             });
                             let clearFlag = flag.findIndex((val) => {return val == index});
-                            console.log(flag);
                             flag.splice(clearFlag,1);
-                            console.log(flag);
-                        }else{
-                            console.log("什么鬼情况,flag内没有这个值但是格子里有值?");
                         }
                     }
                 }else{
